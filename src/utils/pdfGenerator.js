@@ -104,7 +104,7 @@ export const generatePDF = (quoteData) => {
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text("Pack de Entregables WOW (Incluido):", 20, y);
+    doc.text("Pack de Entregables (Incluido):", 20, y);
     y += 10;
 
     doc.setFontSize(10);
@@ -128,7 +128,7 @@ export const generatePDF = (quoteData) => {
     doc.setTextColor(150);
     doc.text("Este documento es un presupuesto preliminar basado en la información proporcionada.", 105, y, { align: "center" });
     doc.text("Validez: 15 días hábiles.", 105, y + 5, { align: "center" });
-    doc.text("Consultas: plazamax355@gmail.com | +54 3875469314", 105, y + 10, { align: "center" });
+    doc.text("Consultas: plazamaxi385@gmail.com | +54 3875469814", 105, y + 10, { align: "center" });
 
     // Save
     doc.save("Presupuesto_MaximilianoPlaza.pdf");
