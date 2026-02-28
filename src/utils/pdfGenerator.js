@@ -1,11 +1,20 @@
+import { jsPDF } from 'jspdf';
+import { pricingData } from '../data/pricing';
+
 /**
  * Generates a professional PDF budget/proposal based on selected options.
  * @module utils/pdfGenerator
- * @param {Object} quoteData - The calculated pricing and selection data.
+ * @param {Object} quoteData - The selection data containing IDs.
  */
 export const generatePDF = (quoteData) => {
+    const { category: categoryId, level: levelId, addons: addonIds, total } = quoteData;
+
+    // Resolve Data
+    const category = pricingData.categories.find(c => c.id === categoryId);
+    const level = category?.levels.find(l => l.id === levelId);
+    const addons = addonIds.map(id => pricingData.addons.find(a => a.id === id)).filter(Boolean);
+
     const doc = new jsPDF();
-    const { category, level, addons, total } = quoteData;
 
     // Colors
     const primaryColor = "#050505";

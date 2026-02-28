@@ -5,9 +5,8 @@ export const projects = [
         shortDescription: "Aplicación móvil para niños neurodivergentes con TensorFlow Lite y Gemini API.",
         fullDescription: "KOA es una solución disruptiva que utiliza inteligencia artificial para mejorar la calidad de vida de niños con autismo y otras condiciones neurodiversas. El sistema integra modelos de visión computacional para detectar emociones y agentes conversacional basados en Gemini para ofrecer apoyo emocional y sugerencias de juegos adaptados en tiempo real.",
         tags: ["Flutter", "TensorFlow", "Gemini API", "Neurodiversity", "Python"],
-        image: "http://localhost:5173/image/landingsportkombatcenter.png",
-        gallery: [
-            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200", // Dashboard/Data
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200",
+        gallery: [ // Dashboard/Data
             "https://images.unsplash.com/photo-1558403194-611308249627?q=80&w=1200", // Mobile interface focus
             "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200"  // Deep tech/Hardware
         ],
@@ -17,8 +16,8 @@ export const projects = [
             "Algoritmo de recomendación de juegos terapéuticos.",
             "Panel para padres con estadísticas de progreso emocional."
         ],
-        challenges: "El mayor desafío fue optimizar el modelo de IA para que funcionara con baja latencia en dispositivos móviles de gama media.",
-        link: "https://github.com/MaxiPlaza/KOA",
+        challenges: "Es una aplicacion con un ecosistema tecnologico gigante , por ende sigue en desarrollo..",
+        link: "",
         featured: true
     },
     {
