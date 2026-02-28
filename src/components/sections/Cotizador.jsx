@@ -93,7 +93,7 @@ const Cotizador = () => {
 
     const handleWhatsApp = () => {
         const text = `Hola Maximiliano! Me interesa un proyecto de ${pricingData.categories.find(c => c.id === selection.category).name} (Nivel ${selection.level}). Presupuesto estimado: $${total.toLocaleString('es-AR')}.`;
-        window.open(`https://wa.me/543875469314?text=${encodeURIComponent(text)}`, '_blank');
+        window.open(`https://wa.me/543875469814?text=${encodeURIComponent(text)}`, '_blank');
     };
 
     return (
