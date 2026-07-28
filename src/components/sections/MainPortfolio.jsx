@@ -2,7 +2,7 @@ import Hero from './Hero';
 import TechStack from './TechStack';
 import Projects from './Projects';
 import Experience from './Experience';
-import Cotizador from './Cotizador';
+import Formulario from './Formulario';
 
 const MainPortfolio = () => {
     return (
@@ -11,7 +11,7 @@ const MainPortfolio = () => {
             <TechStack />
             <Projects />
             <Experience />
-            <Cotizador />
+            <Formulario />
         </>
     );
 };

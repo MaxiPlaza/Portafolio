@@ -3,44 +3,94 @@ export const pricingData = {
         {
             id: "web",
             name: "Sitio Web",
-            description: "Presencia digital optimizada con React y Tailwind.",
+            icon: "🌐",
+            description: "Presencia digital optimizada y profesional.",
             levels: [
-                { id: 1, name: "Nivel 1 (Esencial)", price: 250000, features: ["Landing Page", "Scroll Infinito", "Responsive", "SEO Técnico", "WhatsApp"] },
-                { id: 2, name: "Nivel 2 (Profesional)", price: 500000, features: ["Hasta 5 secciones", "Panel Admin (CMS)", "Blog/Noticias", "Edición de fotos/textos"] },
-                { id: 3, name: "Nivel 3 (Transaccional)", price: 750000, features: ["E-commerce", "Carrito de Compras", "Pasarela de Pagos", "Gestión de Usuarios", "DB SQL"] }
+                {
+                    id: 1,
+                    name: "Plan Esencial",
+                    price: 60000,
+                    features: ["Landing Page", "Diseño Responsive", "SEO Técnico", "Botón WhatsApp", "Hasta 3 secciones"]
+                },
+                {
+                    id: 2,
+                    name: "Plan Profesional",
+                    price: 200000,
+                    features: ["Hasta 6 secciones", "Panel Admin (CMS)", "Blog / Noticias", "Formulario de contacto", "Galería de fotos"]
+                },
+                {
+                    id: 3,
+                    name: "Plan Transaccional",
+                    price: 300000,
+                    features: ["E-commerce completo", "Carrito de Compras", "Mercado Pago integrado", "Gestión de Usuarios", "Base de Datos SQL"]
+                }
             ]
         },
         {
             id: "system",
             name: "Sistema de Gestión",
-            description: "Automatización y control para tu negocio.",
+            icon: "⚙️",
+            description: "Automatización y control total para tu negocio.",
             levels: [
-                { id: 1, name: "Nivel 1 (Adm. Básico)", price: 550000, features: ["Inventario simple", "Login Admin", "CRUD en la nube"] },
-                { id: 2, name: "Nivel 2 (Operativo)", price: 950000, features: ["Múltiples roles", "Reportes PDF/Excel", "Gráficos", "Carga masiva"] },
-                { id: 3, name: "Nivel 3 (Integrado)", price: 1700000, features: ["Sincronización sucursales", "APIs externas (AFIP)", "Alertas Real-time"] }
+                {
+                    id: 1,
+                    name: "Plan Básico",
+                    price: 100000,
+                    features: ["Inventario simple", "Login Admin", "CRUD en la nube", "Dashboard básico"]
+                },
+                {
+                    id: 2,
+                    name: "Plan Operativo",
+                    price: 200000,
+                    features: ["Múltiples roles de usuario", "Reportes PDF/Excel", "Gráficos estadísticos", "Carga masiva de datos"]
+                },
+                {
+                    id: 3,
+                    name: "Plan Integrado",
+                    price: 300000,
+                    features: ["Sincronización de sucursales", "APIs externas (AFIP)", "Alertas en tiempo real", "Facturación electrónica"]
+                }
             ]
         },
         {
             id: "app",
-            name: "Aplicación Móvil",
-            description: "Apps nativas/híbridas con Flutter.",
+            name: "App Móvil",
+            icon: "📱",
+            description: "Apps nativas e híbridas de alto rendimiento.",
             levels: [
-                { id: 1, name: "Nivel 1 (Catálogo)", price: 750000, features: ["Vista de productos", "Mapas/GPS", "Botones de acción"] },
-                { id: 2, name: "Nivel 2 (Interactiva)", price: 1500000, features: ["Login Social", "Notificaciones Push", "Perfiles", "Modo Offline"] },
-                { id: 3, name: "Nivel 3 (Ecosistema)", price: 2800000, features: ["QR/Barra scanner", "Bluetooth/Sensores", "Pagos In-App", "High Performance"] }
+                {
+                    id: 1,
+                    name: "Plan Catálogo",
+                    price: 300000,
+                    features: ["Vista de productos/servicios", "Mapas y GPS", "Botones de acción", "Diseño UI/UX personalizado"]
+                },
+                {
+                    id: 2,
+                    name: "Plan Interactiva",
+                    price: 400000,
+                    features: ["Login Social (Google/Facebook)", "Notificaciones Push", "Perfiles de usuario", "Modo Offline"]
+                },
+                {
+                    id: 3,
+                    name: "Plan Ecosistema",
+                    price: 500000,
+                    features: ["Escáner QR/Barras", "Bluetooth y sensores", "Pagos In-App", "Alta performance", "Android + iOS"]
+                }
             ]
         }
     ],
     addons: [
-        { id: "ia", name: "Inteligencia Artificial", price: 200000, description: "Chatbots, Predicción, OCR" },
-        { id: "reservas", name: "Reservas y Citas", price: 100000, description: "Calendario interactivo" },
-        { id: "afip", name: "Facturación AFIP", price: 200000, description: "Conexión WebServices" },
-        { id: "api", name: "Integración APIs", price: 50000, description: "WhatsApp, Maps, Pagos (precio c/u)" },
-        { id: "lang", name: "Multi-idioma", price: 50000, description: "Soporte internacional" }
+        { id: "ia", name: "Inteligencia Artificial", price: 80000, description: "Chatbots, predicción, OCR automatizado" },
+        { id: "reservas", name: "Reservas y Turnos", price: 50000, description: "Calendario interactivo para citas" },
+        { id: "afip", name: "Facturación AFIP", price: 80000, description: "Conexión WebServices AFIP" },
+        { id: "mercadopago", name: "Mercado Pago", price: 30000, description: "Cobros online integrados" },
+        { id: "whatsapp", name: "WhatsApp Business API", price: 30000, description: "Mensajería automatizada" },
+        { id: "lang", name: "Multi-idioma", price: 40000, description: "Soporte internacional (ES/EN)" },
+        { id: "mantenimiento", name: "Mantenimiento mensual", price: 30000, description: "Actualizaciones y backups" }
     ],
     maintenance: [
-        { id: "basic", name: "Plan Básico", price: 60000, interval: "mes" },
-        { id: "pro", name: "Plan Pro", price: 100000, interval: "mes" }
+        { id: "basic", name: "Plan Básico", price: 30000, interval: "mes" },
+        { id: "pro", name: "Plan Pro", price: 60000, interval: "mes" }
     ]
 };
 

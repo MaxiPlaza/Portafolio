@@ -10,6 +10,7 @@ const navLinks = [
     { name: 'Stack', href: '/#stack' },
     { name: 'Proyectos', href: '/#projects' },
     { name: 'Experiencia', href: '/#experience' },
+    { name: 'Formulario', href: '/#formulario' },
 ];
 
 const Navbar = () => {
@@ -58,7 +59,7 @@ const Navbar = () => {
                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full" />
                         </Link>
                     ))}
-                    <Link to="/#cotizador">
+                    <Link to="/#formulario">
                         <Button variant="primary">
                             Cotizar Proyecto
                         </Button>
@@ -92,7 +93,7 @@ const Navbar = () => {
                                     {link.name}
                                 </Link>
                             ))}
-                            <Link to="/#cotizador" onClick={() => setIsMobileMenuOpen(false)}>
+                            <Link to="/#formulario" onClick={() => setIsMobileMenuOpen(false)}>
                                 <Button className="w-full">
                                     Cotizar Proyecto
                                 </Button>

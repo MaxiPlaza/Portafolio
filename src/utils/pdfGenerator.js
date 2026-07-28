@@ -2,134 +2,257 @@ import { jsPDF } from 'jspdf';
 import { pricingData } from '../data/pricing';
 
 /**
- * Generates a professional PDF budget/proposal based on selected options.
- * @module utils/pdfGenerator
- * @param {Object} quoteData - The selection data containing IDs.
+ * Generates a comprehensive PDF budget with all form data.
+ * @param {Object} formData - All the form answers
+ * @param {Object} budgetSummary - Pricing breakdown { planName, basePrice, addonsDetail, total }
  */
-export const generatePDF = (quoteData) => {
-    const { category: categoryId, level: levelId, addons: addonIds, total } = quoteData;
-
-    // Resolve Data
-    const category = pricingData.categories.find(c => c.id === categoryId);
-    const level = category?.levels.find(l => l.id === levelId);
-    const addons = addonIds.map(id => pricingData.addons.find(a => a.id === id)).filter(Boolean);
-
+export const generatePDF = (formData, budgetSummary) => {
     const doc = new jsPDF();
+    const pageWidth = 210;
+    const margin = 18;
+    const contentWidth = pageWidth - margin * 2;
 
     // Colors
-    const primaryColor = "#050505";
-    const accentColor = "#00d2ff";
+    const darkBg = [5, 5, 5];
+    const accentCyan = [0, 210, 255];
+    const white = [255, 255, 255];
+    const lightGray = [200, 200, 200];
+    const midGray = [120, 120, 120];
+    const sectionBg = [18, 18, 28];
+    const cardBg = [25, 25, 40];
 
-    // Header
-    doc.setFillColor(5, 5, 5); // Dark background
-    doc.rect(0, 0, 210, 40, "F");
+    const categoryLabels = { web: 'Sitio Web', system: 'Sistema de Gestión', app: 'App Móvil' };
+    const categoryIcons = { web: '🌐', system: '⚙️', app: '📱' };
 
-    doc.setTextColor(255, 255, 255);
+    // ─── HEADER ────────────────────────────────────────
+    doc.setFillColor(...darkBg);
+    doc.rect(0, 0, pageWidth, 50, 'F');
+
+    // Accent line
+    doc.setFillColor(...accentCyan);
+    doc.rect(0, 48, pageWidth, 2, 'F');
+
+    doc.setTextColor(...white);
     doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text("Maximiliano Plaza", 20, 20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Maximiliano Plaza', margin, 22);
 
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "normal");
-    doc.text("Full Stack Developer & AI Solutions", 20, 28);
-
-    doc.setTextColor(0, 210, 255); // Cyan
-    doc.text("COTIZACIÓN OFICIAL", 150, 25);
-
-    // Date
-    doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
-    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 50);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...lightGray);
+    doc.text('Full Stack Developer · AI Solutions · Apps Móviles', margin, 30);
 
-    // Project Details
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text("Detalles del Proyecto", 20, 60);
+    doc.setTextColor(...accentCyan);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PRESUPUESTO OFICIAL', pageWidth - margin, 22, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...lightGray);
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-AR')}`, pageWidth - margin, 30, { align: 'right' });
+    doc.text('Validez: 15 días hábiles', pageWidth - margin, 37, { align: 'right' });
 
+    let y = 62;
+
+    // ─── CLIENT INFO ────────────────────────────────────
+    doc.setFillColor(...cardBg);
+    doc.roundedRect(margin, y, contentWidth, 28, 3, 3, 'F');
+
+    doc.setTextColor(...accentCyan);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('INFORMACIÓN DEL CLIENTE', margin + 5, y + 8);
+
+    doc.setTextColor(...white);
+    doc.setFontSize(10);
+    doc.text(formData.clientName || 'Cliente', margin + 5, y + 17);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...lightGray);
+    doc.setFontSize(9);
+    doc.text(`${formData.clientEmail || ''}   ${formData.clientPhone ? '· ' + formData.clientPhone : ''}`, margin + 5, y + 24);
+
+    y += 36;
+
+    // ─── PROJECT TYPE BADGE ─────────────────────────────
+    doc.setFillColor(0, 50, 70);
+    doc.roundedRect(margin, y, contentWidth, 22, 3, 3, 'F');
+    doc.setDrawColor(...accentCyan);
     doc.setLineWidth(0.5);
-    doc.setDrawColor(0, 210, 255);
-    doc.line(20, 63, 190, 63);
+    doc.roundedRect(margin, y, contentWidth, 22, 3, 3, 'S');
 
-    let y = 75;
-
-    // Selected Plan
+    doc.setTextColor(...accentCyan);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TIPO DE PROYECTO', margin + 5, y + 8);
+    doc.setTextColor(...white);
     doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text(`Tipo de Solución:`, 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(`${category?.name || 'N/A'}`, 70, y);
-    y += 10;
+    doc.text(`${categoryIcons[formData.projectType] || ''} ${categoryLabels[formData.projectType] || formData.projectType}  —  ${budgetSummary.planName}`, margin + 5, y + 17);
 
-    doc.setFont("helvetica", "bold");
-    doc.text(`Nivel Seleccionado:`, 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(`${level?.name || 'N/A'}`, 70, y);
-    y += 10;
+    y += 30;
 
-    doc.setFont("helvetica", "bold");
-    doc.text(`Precio Base:`, 20, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(`$${(level?.price || 0).toLocaleString('es-AR')}`, 70, y);
-    y += 15;
+    // Helper: section header
+    const sectionHeader = (title) => {
+        doc.setFillColor(...sectionBg);
+        doc.rect(margin, y, contentWidth, 10, 'F');
+        doc.setFillColor(...accentCyan);
+        doc.rect(margin, y, 3, 10, 'F');
+        doc.setTextColor(...accentCyan);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.text(title, margin + 8, y + 7);
+        y += 14;
+    };
 
-    // Add-ons
-    if (addons && addons.length > 0) {
-        doc.setFont("helvetica", "bold");
-        doc.text("Módulos Extra (Add-ons):", 20, y);
-        y += 10;
+    // Helper: row
+    const addRow = (label, value) => {
+        if (y > 265) { doc.addPage(); y = 20; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...midGray);
+        doc.text(label + ':', margin + 2, y);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...white);
+        const lines = doc.splitTextToSize(String(value || 'No indicado'), contentWidth - 55);
+        doc.text(lines, margin + 55, y);
+        y += Math.max(7, lines.length * 5.5);
+    };
 
-        addons.forEach(addon => {
-            doc.setFont("helvetica", "normal");
-            doc.text(`• ${addon.name}`, 25, y);
-            doc.text(`$${addon.price.toLocaleString('es-AR')}`, 150, y, { align: "right" });
-            y += 8;
-        });
-        y += 5;
+    // ─── BUSINESS INFO ──────────────────────────────────
+    sectionHeader('📋  INFORMACIÓN DEL NEGOCIO');
+    addRow('Nombre del negocio', formData.businessName);
+    addRow('Antigüedad', formData.businessAge);
+    addRow('Producto / Servicio', formData.businessCore);
+    addRow('Diferenciador clave', formData.differentiator);
+    addRow('Cómo consigue clientes', formData.clientAcquisition);
+    y += 4;
+
+    // ─── PROBLEM / PAIN ─────────────────────────────────
+    sectionHeader('💡  PROBLEMA ACTUAL');
+    addRow('Mayor frustración', formData.mainPain);
+    addRow('Por qué busca solución ahora', formData.whyNow);
+    addRow('Tarea manual a eliminar', formData.manualTask);
+    y += 4;
+
+    // ─── TARGET AUDIENCE ────────────────────────────────
+    sectionHeader('🎯  PÚBLICO OBJETIVO');
+    addRow('Cliente ideal', formData.idealClient);
+    addRow('Dispositivo principal', formData.mainDevice);
+    addRow('Queja más común', formData.clientComplaint);
+    y += 4;
+
+    // ─── FEATURES ───────────────────────────────────────
+    sectionHeader('⚙️  FUNCIONALIDADES REQUERIDAS');
+    addRow('Definición de éxito', formData.successDefinition);
+    addRow('Integraciones', Array.isArray(formData.integrations) ? formData.integrations.join(', ') : formData.integrations);
+    addRow('Tiempo real', formData.realtimeData ? 'Sí' : 'No');
+    addRow('Planea escalar', formData.scalePlan ? 'Sí' : 'No');
+    addRow('Panel de administración', formData.needsAdmin ? 'Sí' : 'No');
+    addRow('Notificaciones', formData.notificationType);
+    y += 4;
+
+    // ─── AESTHETICS ─────────────────────────────────────
+    sectionHeader('🎨  ESTÉTICA E IDENTIDAD VISUAL');
+    addRow('Tiene logo/marca', formData.hasLogo ? 'Sí' : 'No');
+    addRow('Colores principales', formData.brandColors);
+    addRow('Estilo tipográfico', formData.typography);
+    addRow('Referencias visuales', formData.referenceUrls);
+    addRow('Tiene fotos propias', formData.hasPhotos ? 'Sí' : 'No');
+    y += 4;
+
+    // ─── TIMELINE ───────────────────────────────────────
+    sectionHeader('📅  PLAZOS Y PRESUPUESTO');
+    addRow('Fecha límite deseada', formData.deadline);
+    addRow('Inversión disponible', formData.budget);
+    addRow('Responsable de decisiones', formData.decisionMaker);
+    addRow('Dominio propio', formData.hasDomain ? `Sí — ${formData.domainName || ''}` : 'No');
+    addRow('Correos corporativos', formData.needsCorporateEmail ? 'Sí' : 'No');
+    addRow('Mantenimiento mensual', formData.needsMaintenance ? 'Sí' : 'No');
+    y += 8;
+
+    // ─── BUDGET SUMMARY ─────────────────────────────────
+    if (y > 230) { doc.addPage(); y = 20; }
+
+    doc.setFillColor(0, 30, 50);
+    doc.roundedRect(margin, y, contentWidth, budgetSummary.addonsDetail ? 52 : 38, 4, 4, 'F');
+    doc.setDrawColor(...accentCyan);
+    doc.setLineWidth(0.8);
+    doc.roundedRect(margin, y, contentWidth, budgetSummary.addonsDetail ? 52 : 38, 4, 4, 'S');
+
+    doc.setTextColor(...accentCyan);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RESUMEN ECONÓMICO', margin + 6, y + 9);
+
+    doc.setTextColor(...lightGray);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Plan base: ${budgetSummary.planName}`, margin + 6, y + 18);
+    doc.text(`$${budgetSummary.basePrice?.toLocaleString('es-AR')} ARS`, pageWidth - margin - 4, y + 18, { align: 'right' });
+
+    let summaryY = y + 18;
+    if (budgetSummary.addonsDetail) {
+        summaryY += 7;
+        doc.text(`Add-ons: ${budgetSummary.addonsDetail}`, margin + 6, summaryY);
     }
 
-    // Total
-    doc.setDrawColor(0, 0, 0);
-    doc.line(20, y, 190, y);
-    y += 10;
+    summaryY += 10;
+    doc.setDrawColor(50, 50, 80);
+    doc.setLineWidth(0.3);
+    doc.line(margin + 6, summaryY - 3, pageWidth - margin - 4, summaryY - 3);
 
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text("INVERSIÓN TOTAL:", 20, y);
-    doc.setTextColor(0, 210, 255);
-    doc.text(`$${total.toLocaleString('es-AR')}`, 190, y, { align: "right" });
+    doc.setTextColor(...white);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('INVERSIÓN TOTAL:', margin + 6, summaryY + 5);
+    doc.setTextColor(...accentCyan);
+    doc.setFontSize(15);
+    doc.text(`$${budgetSummary.total?.toLocaleString('es-AR')} ARS`, pageWidth - margin - 4, summaryY + 5, { align: 'right' });
 
-    y += 20;
+    y = summaryY + 18;
 
-    // "WOW" Deliverables
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Pack de Entregables (Incluido):", 20, y);
-    y += 10;
+    // ─── DELIVERABLES ───────────────────────────────────
+    if (y > 245) { doc.addPage(); y = 20; }
 
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
+    doc.setFillColor(...cardBg);
+    doc.roundedRect(margin, y, contentWidth, 38, 3, 3, 'F');
+
+    doc.setTextColor(...accentCyan);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('📦  ENTREGABLES INCLUIDOS', margin + 5, y + 9);
+
     const deliverables = [
-        "Diseño UI/UX (Figma + Mockups)",
-        "Frontend con React/Flutter & Backend Escalable",
-        "Base de Datos Segura en Supabase",
-        "Documentación Técnica y Video-Manual",
-        "Garantía de 30 días post-entrega"
+        'Diseño UI/UX (Figma + Mockups)',
+        'Frontend con React/Flutter & Backend Escalable',
+        'Base de Datos Segura en Supabase',
+        'Documentación Técnica + Video-Manual',
+        'Garantía de 30 días post-entrega'
     ];
 
-    deliverables.forEach(item => {
-        doc.text(`• ${item}`, 25, y);
-        y += 7;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...lightGray);
+    doc.setFontSize(8.5);
+    deliverables.forEach((item, i) => {
+        const col = i < 3 ? 0 : 1;
+        const row = i < 3 ? i : i - 3;
+        doc.text(`✓  ${item}`, margin + 5 + col * (contentWidth / 2), y + 17 + row * 7);
     });
 
-    // Footer
-    y = 270;
-    doc.setFontSize(8);
-    doc.setTextColor(150);
-    doc.text("Este documento es un presupuesto preliminar basado en la información proporcionada.", 105, y, { align: "center" });
-    doc.text("Validez: 15 días hábiles.", 105, y + 5, { align: "center" });
-    doc.text("Consultas: plazamaxi385@gmail.com | +54 3875469814", 105, y + 10, { align: "center" });
+    y += 46;
 
-    // Save
-    doc.save("Presupuesto_MaximilianoPlaza.pdf");
+    // ─── FOOTER ─────────────────────────────────────────
+    const footerY = 287;
+    doc.setFillColor(...darkBg);
+    doc.rect(0, footerY - 6, pageWidth, 14, 'F');
+    doc.setFillColor(...accentCyan);
+    doc.rect(0, footerY - 6, pageWidth, 1.5, 'F');
+
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...midGray);
+    doc.text('Este presupuesto es estimativo y está sujeto a revisión técnica final.', 105, footerY, { align: 'center' });
+    doc.setTextColor(...accentCyan);
+    doc.text('plazamaxi385@gmail.com   ·   +54 3875469814', 105, footerY + 5, { align: 'center' });
+
+    doc.save(`Presupuesto_MaximilianoPlaza_${new Date().toLocaleDateString('es-AR').replace(/\//g, '-')}.pdf`);
 };
