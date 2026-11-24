@@ -2,7 +2,7 @@ import emailjs from '@emailjs/browser';
 
 // ⚠️ CONFIGURACIÓN EMAILJS — Reemplazá con tus propias claves
 // Instrucciones al final del formulario
-const SERVICE_ID = 'service_ekxqn4';
+const SERVICE_ID = 'service_ekxqn4p';
 const TEMPLATE_ID = 'template_0h1d86u';
 const PUBLIC_KEY = 'nbIM52KNUzYE0kwh5';
 
@@ -122,12 +122,16 @@ Teléfono/WhatsApp: ${formData.clientPhone || 'No indicado'}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     `;
 
+    const projectLabel = categoryLabels[formData.projectType] || formData.projectType || 'Proyecto';
+
     const templateParams = {
         to_email: 'plazamaxi385@gmail.com',
-        subject: `🚀 Nuevo Proyecto: ${categoryLabels[formData.projectType]} — ${formData.businessName || 'Cliente'}`,
+        name: formData.clientName || 'Cliente',
+        email: formData.clientEmail || 'plazamaxi385@gmail.com',
+        subject: `🚀 Nuevo Proyecto: ${projectLabel} — ${formData.businessName || 'Cliente'}`,
         client_name: formData.clientName || 'Cliente',
         client_email: formData.clientEmail || 'No indicado',
-        project_type: categoryLabels[formData.projectType] || formData.projectType,
+        project_type: projectLabel,
         plan_name: budgetSummary.planName,
         total_price: `$${budgetSummary.total?.toLocaleString('es-AR')} ARS`,
         dashboard_content: dashboard,
@@ -135,11 +139,14 @@ Teléfono/WhatsApp: ${formData.clientPhone || 'No indicado'}
     };
 
     try {
-        const result = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+        const result = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, {
+            publicKey: PUBLIC_KEY,
+        });
         return { success: true, result };
     } catch (error) {
+        const errorMessage = error?.text || error?.message || 'Error desconocido al conectar con EmailJS';
         console.error('EmailJS error:', error);
-        return { success: false, error };
+        return { success: false, error, errorMessage };
     }
 };
 

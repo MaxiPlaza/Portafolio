@@ -756,7 +756,7 @@ const StepContactInfo = ({ formData, setFormData }) => {
     );
 };
 
-const StepSummary = ({ formData, budgetSummary, onDownloadPDF, onSendEmail, emailStatus }) => {
+const StepSummary = ({ formData, budgetSummary, onDownloadPDF, onSendEmail, emailStatus, emailError }) => {
     const categoryLabels = { web: 'Sitio Web', system: 'Sistema de Gestión', app: 'App Móvil' };
     const categoryIcons = { web: '🌐', system: '⚙️', app: '📱' };
 
@@ -891,6 +891,16 @@ const StepSummary = ({ formData, budgetSummary, onDownloadPDF, onSendEmail, emai
                 </motion.button>
             </div>
 
+            {emailStatus === 'error' && emailError && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-center"
+                >
+                    <p className="text-red-400 text-sm font-medium">No se pudo enviar el correo: {emailError}</p>
+                </motion.div>
+            )}
+
             {emailStatus === 'sent' && (
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -919,6 +929,7 @@ const Formulario = () => {
     const [currentStep, setCurrentStep] = useState(0); // 0 = intro
     const [formData, setFormData] = useState({});
     const [emailStatus, setEmailStatus] = useState('idle'); // idle | sending | sent | error
+    const [emailError, setEmailError] = useState('');
     const containerRef = useRef(null);
 
     const scrollToTop = () => {
@@ -972,8 +983,14 @@ const Formulario = () => {
 
     const handleSendEmail = async () => {
         setEmailStatus('sending');
+        setEmailError('');
         const result = await sendFormEmail(formData, budgetSummary);
-        setEmailStatus(result.success ? 'sent' : 'error');
+        if (result.success) {
+            setEmailStatus('sent');
+        } else {
+            setEmailError(result.errorMessage || 'Error al enviar el correo');
+            setEmailStatus('error');
+        }
     };
 
     // Slide animation variants
@@ -1006,6 +1023,7 @@ const Formulario = () => {
                     onDownloadPDF={handleDownloadPDF}
                     onSendEmail={handleSendEmail}
                     emailStatus={emailStatus}
+                    emailError={emailError}
                 />
             );
             default: return null;
@@ -1060,7 +1078,7 @@ const Formulario = () => {
                             </div>
                             {!isIntro && !isSummary && (
                                 <button
-                                    onClick={() => { setCurrentStep(0); setFormData({}); setEmailStatus('idle'); }}
+                                    onClick={() => { setCurrentStep(0); setFormData({}); setEmailStatus('idle'); setEmailError(''); }}
                                     className="text-xs text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-1"
                                 >
                                     <RefreshCw className="w-3 h-3" /> Reiniciar
